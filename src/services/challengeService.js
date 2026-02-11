@@ -1,8 +1,15 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/challenges`;
 
-const index = async () => {
+const index = async (filters = {}) => {
   try {
-    const res = await fetch(BASE_URL);
+    const params = new URLSearchParams();
+    if (filters.difficulty) params.append("difficulty", filters.difficulty);
+    if (filters.sort_by) params.append("sort_by", filters.sort_by);
+
+    const queryString = params.toString();
+    const url = queryString ? `${BASE_URL}?${queryString}` : BASE_URL
+
+    const res = await fetch(url);
     return res.json();
   } catch (err) {
     console.log(err);

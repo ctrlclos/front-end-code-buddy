@@ -18,12 +18,12 @@ const App = () => {
   const [challenges, setChallenges] = useState([]);
   const navigate = useNavigate();
 
+  const fetchChallenges = async (filters = {}) => {
+    const challengesData = await challengeService.index(filters);
+    setChallenges(Array.isArray(challengesData) ? challengesData : []);
+  };
   useEffect(() => {
-    const fetchAllChallenges = async () => {
-      const challengesData = await challengeService.index();
-      setChallenges(challengesData);
-    };
-    if (user) fetchAllChallenges();
+    if (user) fetchChallenges();
   }, [user]);
 
   const handleAddChallenge = async (challengeFormData) => {
@@ -58,7 +58,7 @@ const App = () => {
         <Route path="/" element={user ? <Dashboard /> : <Landing />} />
         {user ? (
           <>
-            <Route path="/challenges" element={<ChallengeList challenges={challenges} />} />
+            <Route path="/challenges" element={<ChallengeList challenges={challenges} fetchChallenges={fetchChallenges}/>} />
             <Route path="/challenges/:challengeId" element={<ChallengeDetails handleDeleteChallenge={handleDeleteChallenge} />} />
             <Route path="/challenges/new" element={<ChallengeForm handleAddChallenge={handleAddChallenge} />} />
             <Route path="/challenges/:challengeId/edit" element={<ChallengeForm handleUpdateChallenge={handleUpdateChallenge} />} />
