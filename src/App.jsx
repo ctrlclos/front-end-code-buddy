@@ -7,44 +7,48 @@ import Landing from "./components/Landing/Landing.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import { UserContext } from "./contexts/UserContext.jsx";
 
-import * as hootService from "./services/hootService.js";
+import * as challengeService from "./services/challengeService.js";
 
-import HootList from "./components/HootList/HootList.jsx";
-import HootDetails from "./components/HootDetails/HootDetails.jsx";
-import HootForm from './components/HootForm/HootForm.jsx';
+import ChallengeList from "./components/ChallengeList/ChallengeList.jsx";
+import ChallengeDetails from "./components/ChallengeDetails/ChallengeDetails.jsx";
+import ChallengeForm from "./components/ChallengeForm/ChallengeForm.jsx";
 
 const App = () => {
   const { user } = useContext(UserContext);
-  const [hoots, setHoots] = useState([]);
+  const [challenges, setChallenges] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAllHoots = async () => {
-      const hootsData = await hootService.index();
-      setHoots(hootsData);
+    const fetchAllChallenges = async () => {
+      const challengesData = await challengeService.index();
+      setChallenges(challengesData);
     };
-    if (user) fetchAllHoots();
+    if (user) fetchAllChallenges();
   }, [user]);
 
-  const handleAddHoot = async (hootFormData) => {
-    const newHoot = await hootService.create(hootFormData);
-    setHoots([newHoot, ...hoots])
-    navigate('/hoots');
+  const handleAddChallenge = async (challengeFormData) => {
+    const newChallenge = await challengeService.create(challengeFormData);
+    setChallenges([newChallenge, ...challenges]);
+    navigate("/challenges");
   };
 
-  const handleDeleteHoot = async (hootId) => {
-
-    const deletedHoot = await hootService.deleteHoot(hootId);
-    const filteredHoots = hoots.filter(hoot => hoot._id !== deletedHoot._id);
-    setHoots(filteredHoots);
-    navigate('/hoots');
+  const handleDeleteChallenge = async (challengeId) => {
+    const deletedChallenge = await challengeService.deleteChallenge(challengeId);
+    const filteredChallenges = challenges.filter(
+      (challenge) => challenge.id !== deletedChallenge.id
+    );
+    setChallenges(filteredChallenges);
+    navigate("/challenges");
   };
 
-  const handleUpdateHoot = async (hootId, hootFormData) => {
-    console.log(hootId, hootFormData);
-    const updatedHoot = await hootService.updateHoot(hootId, hootFormData);
-    setHoots(hoots.map(hoot => hoot._id === hootId ? updatedHoot : hoot))
-    navigate(`/hoots/${hootId}`);
+  const handleUpdateChallenge = async (challengeId, challengeFormData) => {
+    const updatedChallenge = await challengeService.update(challengeId, challengeFormData);
+    setChallenges(
+      challenges.map((challenge) =>
+        challenge.id === parseInt(challengeId) ? updatedChallenge : challenge
+      )
+    );
+    navigate(`/challenges/${challengeId}`);
   };
 
   return (
@@ -54,10 +58,10 @@ const App = () => {
         <Route path="/" element={user ? <Dashboard /> : <Landing />} />
         {user ? (
           <>
-            <Route path="/hoots" element={<HootList hoots={hoots} />} />
-            <Route path="/hoots/:hootId" element={<HootDetails handleDeleteHoot={handleDeleteHoot}/>} />
-            <Route path="/hoots/new" element={<HootForm handleAddHoot={handleAddHoot} />} />
-            <Route path="/hoots/:hootId/edit" element={<HootForm handleUpdateHoot={handleUpdateHoot} />} />
+            <Route path="/challenges" element={<ChallengeList challenges={challenges} />} />
+            <Route path="/challenges/:challengeId" element={<ChallengeDetails handleDeleteChallenge={handleDeleteChallenge} />} />
+            <Route path="/challenges/new" element={<ChallengeForm handleAddChallenge={handleAddChallenge} />} />
+            <Route path="/challenges/:challengeId/edit" element={<ChallengeForm handleUpdateChallenge={handleUpdateChallenge} />} />
           </>
         ) : (
           <>
