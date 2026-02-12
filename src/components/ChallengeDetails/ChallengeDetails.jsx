@@ -27,6 +27,7 @@ const ChallengeDetails = ({ handleDeleteChallenge }) => {
           {challenge.data_structure_type && (
             <p>{challenge.data_structure_type.replace("_", " ").toUpperCase()}</p>
           )}
+          {challenge.is_curated && (<p style={{color: "#646cff", fontWeight: "bold"}}>CURATED</p>)}
           <h1>{challenge.title}</h1>
           <p>
             {`${challenge.author_username} posted on
@@ -40,6 +41,7 @@ const ChallengeDetails = ({ handleDeleteChallenge }) => {
               </button>
             </>
           )}
+          <Link to={`/challenges/${challengeId}/practice`}>Practice</Link>
         </header>
         <p>{challenge.description}</p>
       </section>

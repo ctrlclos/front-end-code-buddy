@@ -5,6 +5,7 @@ import SignUpForm from "./components/SignUpForm/SignUpForm.jsx";
 import SignInForm from "./components/SignInForm/SignInForm.jsx";
 import Landing from "./components/Landing/Landing.jsx";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
+import PracticeView from './components/PracticeView/PracticeView.jsx';
 import { UserContext } from "./contexts/UserContext.jsx";
 
 import * as challengeService from "./services/challengeService.js";
@@ -62,6 +63,7 @@ const App = () => {
             <Route path="/challenges/:challengeId" element={<ChallengeDetails handleDeleteChallenge={handleDeleteChallenge} />} />
             <Route path="/challenges/new" element={<ChallengeForm handleAddChallenge={handleAddChallenge} />} />
             <Route path="/challenges/:challengeId/edit" element={<ChallengeForm handleUpdateChallenge={handleUpdateChallenge} />} />
+            <Route path="/challenges/:challengeId/practice" element={<PracticeView />} />
           </>
         ) : (
           <>
