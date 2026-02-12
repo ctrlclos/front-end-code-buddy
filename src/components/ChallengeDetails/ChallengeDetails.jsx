@@ -23,7 +23,10 @@ const ChallengeDetails = ({ handleDeleteChallenge }) => {
     <main>
       <section>
         <header>
-          <p>{challenge.difficulty.toUpperCase()}</p>
+          {challenge.difficulty && <p>{challenge.difficulty.toUpperCase()}</p>}
+          {challenge.data_structure_type && (
+            <p>{challenge.data_structure_type.replace("_", " ").toUpperCase()}</p>
+          )}
           <h1>{challenge.title}</h1>
           <p>
             {`${challenge.author_username} posted on
