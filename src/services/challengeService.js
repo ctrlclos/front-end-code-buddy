@@ -4,6 +4,7 @@ const index = async (filters = {}) => {
   try {
     const params = new URLSearchParams();
     if (filters.difficulty) params.append("difficulty", filters.difficulty);
+    if (filters.data_structure_type) params.append("data_structure_type", filters.data_structure_type);
     if (filters.sort_by) params.append("sort_by", filters.sort_by);
 
     const queryString = params.toString();

@@ -9,6 +9,7 @@ const ChallengeForm = ({ handleAddChallenge, handleUpdateChallenge }) => {
     title: "",
     description: "",
     difficulty: "easy",
+    data_structure_type: "",
   });
 
   useEffect(() => {
@@ -22,6 +23,7 @@ const ChallengeForm = ({ handleAddChallenge, handleUpdateChallenge }) => {
         title: "",
         description: "",
         difficulty: "easy",
+        data_structure_type: "",
       });
   }, [challengeId]);
 
@@ -70,6 +72,25 @@ const ChallengeForm = ({ handleAddChallenge, handleUpdateChallenge }) => {
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
+        </select>
+        <label htmlFor="data-structure-type-input">Data Structure Type</label>
+        <select
+          name="data_structure_type"
+          id="data-structure-type-input"
+          value={formData.data_structure_type}
+          onChange={handleChange}
+        >
+          <option value="">-- Select (optional) --</option>
+          <option value="array">Array</option>
+          <option value="string">String</option>
+          <option value="linked_list">Linked List</option>
+          <option value="stack">Stack</option>
+          <option value="queue">Queue</option>
+          <option value="hash_table">Hash Table</option>
+          <option value="tree">Tree</option>
+          <option value="graph">Graph</option>
+          <option value="heap">Heap</option>
+          <option value="recursion">Recursion</option>
         </select>
         <button type="submit">SUBMIT</button>
       </form>

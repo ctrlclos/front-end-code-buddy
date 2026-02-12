@@ -21,7 +21,7 @@ const Dashboard = () => {
         <main>
             <h1>Welcome, {user.username}</h1>
             {users.map((item) => (
-                <p key={item._id}>{item.username}</p>
+                <p key={item.id}>{item.username}</p>
             ))}
         </main>
     )
