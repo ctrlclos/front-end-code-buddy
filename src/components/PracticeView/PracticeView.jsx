@@ -10,46 +10,53 @@ import * as submissionService from '../../services/submissionService';
 const LANGUAGES = [
   { value: "python",label: "Python" },
   { value: "javascript", label: "JavaScript" },
-  { value: "java", label: "Java" },
-  { value: "cpp", label: "C++" },
 ];
 
 const LANGUAGE_EXTENSIONS = {
   python: () => langs.py(),
   javascript: () => langs.js(),
-  java: () => langs.java(),
-  cpp: () => langs.cpp(),
-}
-const newLine = `\n`;
-const tab = `\t`;
-
-const pythonStarterCode = `# Write your solution here${newLine}${newLine}def solution():${newLine}${tab}pass${newLine}`;
-const javascriptStarterCode = `// Write your solution here${newLine}${newLine}function solution() {${newLine}${tab}${newLine}}${newLine}`;
-const javaStarterCode = `// Write your solution here${newLine}${newLine}class Solution {${newLine}${tab}public void solve() {${newLine}${tab}${tab}${newLine}${tab}}${newLine}}${newLine}`;
-const cppStarterCode = `// Write your solution here${newLine}${newLine}#include <iostream>${newLine}using namespace std;${newLine}${newLine}int main() {${newLine}${tab}${newLine}${tab}return 0;${newLine}}${newLine}`;
-
-
-const STARTER_CODE = {
-  python: pythonStarterCode,
-  javascript: javascriptStarterCode,
-  java: javaStarterCode,
-  cpp: cppStarterCode
 }
 
 const PracticeView = () => {
   const { challengeId } = useParams();
   const [challenge, setChallenge] = useState(null);
-  const [code, setCode] = useState(STARTER_CODE.python);
+  const [code, setCode] = useState("");
   const [language, setLanguage] = useState("python");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [timer, setTimer] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
 
+  const getStarterCode = (lang) => {
+    return challenge?.starter_code?.[lang] || "";
+  };
+
+  const formatInput = (rawInput) => {
+    const params = challenge?.function_params;
+    if(!params || params.length === 0) return rawInput;
+    try {
+      const args = JSON.parse(rawInput)
+      return params.map((p, i) => `${p.name} = ${JSON.stringify(args[i], null, 0)}`).join("\n");
+    }catch{
+      return rawInput;
+    }
+  }
+
+  const formatOutput = (rawOutput) => {
+    if(!challenge?.function_name) return rawOutput;
+    try {
+      const parsed = JSON.parse(rawOutput);
+      return JSON.stringify(parsed, null, 0);
+    } catch {
+      return rawOutput;
+    }
+  }
+
   useEffect(() => {
     const fetchChallenge = async () => {
       const challengeData = await challengeService.show(challengeId);
       setChallenge(challengeData);
+      setCode(challengeData?.starter_code?.[language] || "");
     };
     fetchChallenge();
   }, [challengeId]);
@@ -78,7 +85,7 @@ const PracticeView = () => {
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     setLanguage(newLang);
-    setCode(STARTER_CODE[newLang]);
+    setCode(getStarterCode(newLang));
     setResult(null);
   };
 
@@ -99,9 +106,10 @@ const PracticeView = () => {
   }
 
   const handleReset = () => {
-    setCode(STARTER_CODE[language]);
+    setCode(getStarterCode(language));
     setResult(null);
   };
+
 if (!challenge) return <main style={{ textAlign: "center", padding: "2rem" }}>Loading...</main>
 return (
   <main style={{ display: "flex", gap: "1.5rem", textAlign: "left", maxWidth: "100%" }}>
@@ -137,6 +145,13 @@ return (
             </span>
           )}
         </div>
+        {challenge.function_name && (
+          <p style={{ fontFamily: "monospace", fontSize: "0.9em", opacity: 0.8, margin: "0.5rem 0" }}>
+            {challenge.function_name}(
+            {challenge.function_params?.map((p) => `${p.name}: ${p.type}`).join(", ")}
+            ) &rarr; {challenge.return_type}
+          </p>
+        )}
         <h1 style={{ margin: "0.5rem 0", fontSize: "1.8em" }}>{challenge.title}</h1>
       </header>
       <p style={{ lineHeight: "1.6", opacity: 0.9 }}>{challenge.description}</p>
@@ -189,6 +204,7 @@ return (
           </button>
         </div>
       </div>
+
       {/* Editor */}
       <div style={{ borderRadius: "8px", overflow: "hidden", border: "1px solid #333" }}>
         <CodeMirror
@@ -219,18 +235,117 @@ return (
       </div>
       {/* Result */}
       {result && (
-        <div style={{
-          padding: "0.75rem 1rem",
-          borderRadius: "8px",
-          border: `1px solid ${result.error ? "#e53e3e" : "#48bb78"}`,
-          background: result.error ? "rgba(229, 62, 62, 0.1)" : "rgba(72, 187, 120, 0.1)",
-        }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           {result.error ? (
-            <p style={{ margin: 0, color: "#e53e3e" }}>
-              {result.error}
-            </p>
-          ) : (
+            <div style={{
+              padding: "0.75rem 1rem",
+              borderRadius: "8px",
+              border: "1px solid #e53e3e",
+              background: "rgba(229, 62, 62, 0.1)",
+            }}>
+              <p style={{ margin: 0, color: "#e53e3e" }}>{result.error}</p>
+            </div>
+          ) : result.test_results ? (
             <>
+              <div style={{
+                padding: "0.75rem 1rem",
+                borderRadius: "8px",
+                border: `1px solid ${result.status === "passed" ? "#48bb78" : "#e53e3e"}`,
+                background: result.status === "passed"
+                  ? "rgba(72, 187, 120, 0.1)"
+                  : "rgba(229, 62, 62, 0.1)",
+              }}>
+                <p style={{
+                  margin: 0,
+                  fontWeight: "bold",
+                  color: result.status === "passed" ? "#48bb78" : "#e53e3e",
+                }}>
+                  {result.status === "passed" ? "All Tests Passed" : "Some Tests Failed"}
+                  {" "}&mdash; {result.passed_count} / {result.total_count} passed
+                </p>
+              </div>
+              {result.test_results.map((tr, idx) => (
+                <div key={tr.test_case_id} style={{
+                  padding: "0.75rem 1rem",
+                  borderRadius: "8px",
+                  border: `1px solid ${tr.is_hidden ? "#555" : tr.passed ? "#48bb78" : "#e53e3e"}`,
+                  background: tr.is_hidden
+                    ? "rgba(255, 255, 255, 0.03)"
+                    : tr.passed
+                      ? "rgba(72, 187, 120, 0.05)"
+                      : "rgba(229, 62, 62, 0.05)",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: tr.is_hidden ? 0 : "0.5rem" }}>
+                    <span style={{ fontWeight: "bold", color: tr.passed ? "#48bb78" : "#e53e3e" }}>
+                      {tr.passed ? "PASS" : "FAIL"} &mdash; {tr.is_hidden ? "Hidden Test Case" : `Test Case #${idx + 1}`}
+                    </span>
+                    {tr.time && (
+                      <span style={{ fontSize: "0.8em", opacity: 0.6 }}>{tr.time}s</span>
+                    )}
+                  </div>
+                  {!tr.is_hidden && (
+                    <div style={{ fontSize: "0.85em" }}>
+                      <div style={{ marginBottom: "0.25rem" }}>
+                        <strong>{challenge.function_name ? "Arguments" : "Input"}</strong>
+                        <pre style={{
+                          margin: "0.25rem 0",
+                          padding: "0.4rem 0.6rem",
+                          background: "rgba(0, 0, 0, 0.3)",
+                          borderRadius: "4px",
+                          fontFamily: "monospace",
+                          whiteSpace: "pre-wrap",
+                        }}>{tr.input ? formatInput(tr.input) : "(empty)"}</pre>
+                      </div>
+                      <div style={{ marginBottom: "0.25rem" }}>
+                        <strong>Expected:</strong>
+                        <pre style={{
+                          margin: "0.25rem 0",
+                          padding: "0.4rem 0.6rem",
+                          background: "rgba(0, 0, 0, 0.3)",
+                          borderRadius: "4px",
+                          fontFamily: "monospace",
+                          whiteSpace: "pre-wrap",
+                        }}>{formatOutput(tr.expected_output)}</pre>
+                      </div>
+                      {!tr.passed && tr.actual_output !== null && (
+                        <div style={{ marginBottom: "0.25rem" }}>
+                          <strong style={{ color: "#e53e3e" }}>Your Output:</strong>
+                          <pre style={{
+                            margin: "0.25rem 0",
+                            padding: "0.4rem 0.6rem",
+                            background: "rgba(229, 62, 62, 0.1)",
+                            borderRadius: "4px",
+                            fontFamily: "monospace",
+                            whiteSpace: "pre-wrap",
+                          }}>{tr.actual_output ? formatOutput(tr.actual_output) : "(empty)"}</pre>
+                        </div>
+                      )}
+                      {tr.error && (
+                        <div>
+                          <strong style={{ color: "#e53e3e" }}>Error:</strong>
+                          <pre style={{
+                            margin: "0.25rem 0",
+                            padding: "0.4rem 0.6rem",
+                            background: "rgba(229, 62, 62, 0.1)",
+                            borderRadius: "4px",
+                            fontFamily: "monospace",
+                            whiteSpace: "pre-wrap",
+                            fontSize: "0.9em",
+                          }}>{tr.error}</pre>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </>
+          ) : (
+            <div style={{
+              padding: "0.75rem 1rem",
+              borderRadius: "8px",
+              border: "1px solid #48bb78",
+              background: "rgba(72, 187, 120, 0.1)",
+            }}>
               <p style={{ margin: "0 0 0.25rem 0", color: "#48bb78", fontWeight: "bold" }}>
                 Status: {result.status || "Submitted"}
               </p>
@@ -239,7 +354,7 @@ return (
                   Submission ID: {result.id}
                 </p>
               )}
-            </>
+            </div>
           )}
         </div>
       )}
