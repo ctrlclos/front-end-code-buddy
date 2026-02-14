@@ -13,10 +13,12 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
   const [activeDifficulty, setActiveDifficulty] = useState("");
   const [activeDataStructure, setActiveDataStructure] = useState("");
   const [activeSort, setActiveSort] = useState("created_at");
+  const [curatedFilter, setCuratedFilter] = useState("");
 
   const buildFilters = (overrides = {}) => ({
     difficulty: activeDifficulty || undefined,
     data_structure_type: activeDataStructure || undefined,
+    is_curated: curatedFilter || undefined,
     sort_by: activeSort,
     ...overrides,
   });
@@ -38,6 +40,12 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
     setActiveSort(newSort);
     fetchChallenges(buildFilters({ sort_by: newSort }));
   };
+
+  const handleCuratedFilter = (value) => {
+    const newValue = curatedFilter === value ? "" : value;
+    setCuratedFilter(newValue);
+    fetchChallenges(buildFilters({is_curated: newValue || undefined}));
+  }
 
   return (
     <main>
@@ -84,6 +92,21 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
               {formatLabel(ds)}
             </button>
           ))}
+
+          <div style={{display: "flex", gap: "0.5rem", justifyContent: "center", marginTop: "0.75rem"}}>
+            <button
+                onClick={() => handleCuratedFilter("true")}
+                style={{borderColor: curatedFilter === "true" ? "#646cff" : "transparent"}}
+              >Curated Questions</button>
+              {curatedFilter && (<button
+                onClick={() => handleCuratedFilter("")}
+                style={{borderColor: "transparent"}}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
           {activeDataStructure && (
             <button
               onClick={() => handleDataStructureFilter("")}
@@ -107,6 +130,7 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
             </header>
             <p>{challenge.description}</p>
             <p>{challenge.difficulty}</p>
+            {challenge.is_curated && <p style={{color: "#646cff"}}>Curated</p>}
             {challenge.data_structure_type && (
               <p>{formatLabel(challenge.data_structure_type)}</p>
             )}

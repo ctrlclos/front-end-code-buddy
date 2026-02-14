@@ -6,7 +6,8 @@ const index = async (filters = {}) => {
     if (filters.difficulty) params.append("difficulty", filters.difficulty);
     if (filters.data_structure_type) params.append("data_structure_type", filters.data_structure_type);
     if (filters.sort_by) params.append("sort_by", filters.sort_by);
-
+    if (filters.is_curated != undefined) params.append("is_curated", filters.is_curated);
+    
     const queryString = params.toString();
     const url = queryString ? `${BASE_URL}?${queryString}` : BASE_URL
 
