@@ -48,8 +48,8 @@ const ProgressDashboard = () => {
   }, []);
 
   // Toggle submission history for a challenge
-  const handleToggleHistory = async (challengeId) => {
-    if (expandedChallenge === challengeId) {
+  const handleToggleHistory = async (itemId, challengeId) => {
+    if (expandedChallenge === itemId) {
       setExpandedChallenge(null);
       setChallengeHistory([]);
       return;
@@ -59,7 +59,7 @@ const ProgressDashboard = () => {
     if (submissions) {
       setChallengeHistory(submissions);
     }
-    setExpandedChallenge(challengeId);
+    setExpandedChallenge(itemId);
   };
 
   if (loading) return <main>Loading...</main>;
@@ -234,9 +234,9 @@ const ProgressDashboard = () => {
                 border: "1px solid #2a2a4a",
                 borderRadius: "8px",
                 padding: "1rem 1.25rem",
-                marginBottom: expandedChallenge === item.challenge_id ? "0" : "0.75rem",
-                borderBottomLeftRadius: expandedChallenge === item.challenge_id ? "0" : "8px",
-                borderBottomRightRadius: expandedChallenge === item.challenge_id ? "0" : "8px",
+                marginBottom: expandedChallenge === item.id ? "0" : "0.75rem",
+                borderBottomLeftRadius: expandedChallenge === item.id ? "0" : "8px",
+                borderBottomRightRadius: expandedChallenge === item.id ? "0" : "8px",
               }}>
                 <div style={{
                   display: "flex",
@@ -292,7 +292,7 @@ const ProgressDashboard = () => {
                     </span>
 
                     <button
-                      onClick={() => handleToggleHistory(item.challenge_id)}
+                      onClick={() => handleToggleHistory(item.id, item.challenge_id)}
                       style={{
                         background: "transparent",
                         border: "1px solid #646cff",
@@ -303,7 +303,7 @@ const ProgressDashboard = () => {
                         fontSize: "0.8rem",
                       }}
                     >
-                      {expandedChallenge === item.challenge_id
+                      {expandedChallenge === item.id
                         ? "Hide History"
                         : "View History"}
                     </button>
@@ -312,7 +312,7 @@ const ProgressDashboard = () => {
               </div>
 
               {/* Expanded History Panel */}
-              {expandedChallenge === item.challenge_id && (
+              {expandedChallenge === item.id && (
                 <div style={{
                   background: "#12121f",
                   border: "1px solid #2a2a4a",
