@@ -8,37 +8,37 @@ const NavBar = () => {
         setUser(null)
     }
     return (
-        <nav>
+        <nav className="border-b border-border-subtle">
             {user ? (
-                <ul>
+                <ul className="flex gap-6 max-w-6xl mx-auto px-4 py-3">
                     <li>
-                        <Link to='/'>HOME</Link>
+                        <Link to='/' className="text-primary hover:text-primary-dark font-medium">HOME</Link>
                     </li>
                     <li>
-                        <Link to='/challenges'>CHALLENGES</Link>
+                        <Link to='/challenges' className="text-primary hover:text-primary-dark font-medium">CHALLENGES</Link>
                     </li>
                     <li>
-                        <Link to='/challenges/new'>NEW CHALLENGE</Link>
+                        <Link to='/challenges/new' className="text-primary hover:text-primary-dark font-medium">NEW CHALLENGE</Link>
                     </li>
                     <li>
-                      <Link to="/progress" >PROGRESS</Link>
+                      <Link to="/progress"  className="text-primary hover:text-primary-dark font-medium">PROGRESS</Link>
                     </li>
                     <li>
-                        <Link to='/' onClick={handleSignOut}>
+                        <Link to='/' onClick={handleSignOut} className="text-primary hover:text-primary-dark font-medium">
                             SIGN OUT
                         </Link>
                     </li>
                 </ul>
             ) : (
-                <ul>
+                <ul className="flex gap-6 max-w-6xl mx-auto px-4 py-3">
                     <li>
-                        <Link to='/'>Home</Link>
+                        <Link to='/' className="text-primary hover:text-primary-dark font-medium">Home</Link>
                     </li>
                     <li>
-                        <Link to='/sign-up'>Sign Up</Link>
+                        <Link to='/sign-up' className="text-primary hover:text-primary-dark font-medium">Sign Up</Link>
                     </li>
                     <li>
-                        <Link to='/sign-in'>Sign In</Link>
+                        <Link to='/sign-in' className="text-primary hover:text-primary-dark font-medium">Sign In</Link>
                     </li>
                 </ul>
             )}

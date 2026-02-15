@@ -7,6 +7,8 @@ const PARAM_TYPES = [
   "int", "float", "string", "bool", "int[]", "float[]", "string[]", "int[][]",
 ];
 
+const INPUT_BASE = "w-full px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm focus:border-primary focus:outline-none";
+
 const ChallengeForm = ({ handleAddChallenge, handleUpdateChallenge }) => {
   const { challengeId } = useParams();
   const [formData, setFormData] = useState({
@@ -90,71 +92,83 @@ const ChallengeForm = ({ handleAddChallenge, handleUpdateChallenge }) => {
   };
 
   return (
-    <main>
-      <h1>{challengeId ? "Edit Challenge" : "New Challenge"}</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="title-input">Title</label>
-        <input
-          required
-          type="text"
-          name="title"
-          id="title-input"
-          value={formData.title}
-          onChange={handleChange}
-        />
-        <label htmlFor="description-input">Description</label>
-        <textarea
-          required
-          name="description"
-          id="description-input"
-          value={formData.description}
-          onChange={handleChange}
-        />
-        <label htmlFor="difficulty-input">Difficulty</label>
-        <select
-          required
-          name="difficulty"
-          id="difficulty-input"
-          value={formData.difficulty}
-          onChange={handleChange}
-        >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-        <label htmlFor="data-structure-type-input">Data Structure Type</label>
-        <select
-          name="data_structure_type"
-          id="data-structure-type-input"
-          value={formData.data_structure_type}
-          onChange={handleChange}
-        >
-          <option value="">-- Select (optional) --</option>
-          <option value="array">Array</option>
-          <option value="string">String</option>
-          <option value="linked_list">Linked List</option>
-          <option value="stack">Stack</option>
-          <option value="queue">Queue</option>
-          <option value="hash_table">Hash Table</option>
-          <option value="tree">Tree</option>
-          <option value="graph">Graph</option>
-          <option value="heap">Heap</option>
-          <option value="recursion">Recursion</option>
-        </select>
-        {/* function based testing section */}
-        <div style={{ margin: "1rem 0", padding: "1rem", border: "1px solid #333", borderRadius: "8px" }}>
-          <label>
+    <main className="max-w-2xl mx-auto px-8 py-8">
+      <h1 className="text-3xl font-bold mb-6">{challengeId ? "Edit Challenge" : "New Challenge"}</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="title-input" className="text-sm font-medium">Title</label>
+          <input
+            required
+            type="text"
+            name="title"
+            id="title-input"
+            value={formData.title}
+            onChange={handleChange}
+            className={INPUT_BASE}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="description-input" className="text-sm font-medium">Description</label>
+          <textarea
+            required
+            name="description"
+            id="description-input"
+            value={formData.description}
+            onChange={handleChange}
+            className={`${INPUT_BASE} min-h-[120px]`}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="difficulty-input" className="text-sm font-medium">Difficulty</label>
+          <select
+            required
+            name="difficulty"
+            id="difficulty-input"
+            value={formData.difficulty}
+            onChange={handleChange}
+            className={`${INPUT_BASE} cursor-pointer`}
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="data-structure-type-input" className="text-sm font-medium">Data Structure Type</label>
+          <select
+            name="data_structure_type"
+            id="data-structure-type-input"
+            value={formData.data_structure_type}
+            onChange={handleChange}
+            className={`${INPUT_BASE} cursor-pointer`}
+          >
+            <option value="">-- Select (optional) --</option>
+            <option value="array">Array</option>
+            <option value="string">String</option>
+            <option value="linked_list">Linked List</option>
+            <option value="stack">Stack</option>
+            <option value="queue">Queue</option>
+            <option value="hash_table">Hash Table</option>
+            <option value="tree">Tree</option>
+            <option value="graph">Graph</option>
+            <option value="heap">Heap</option>
+            <option value="recursion">Recursion</option>
+          </select>
+        </div>
+        <div className="my-4 p-4 border border-border-default rounded-lg bg-bg-darker">
+          <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={functionMode}
               onChange={(e) => setFunctionMode(e.target.checked)}
+              className="accent-primary"
             />
-            Enable function-based testing.
+            <span className="text-sm font-medium">Enable function-based testing.</span>
           </label>
           {functionMode && (
-            <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <div>
-                <label htmlFor="function-name-input">Function Name</label>
+            <div className="mt-4 flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <label htmlFor="function-name-input" className="text-sm font-medium">Function Name</label>
                 <input
                   required
                   type="text"
@@ -163,58 +177,56 @@ const ChallengeForm = ({ handleAddChallenge, handleUpdateChallenge }) => {
                   value={formData.function_name}
                   onChange={handleChange}
                   placeholder="e.g. twoSum"
+                  className={`${INPUT_BASE} placeholder:text-muted`}
                 />
               </div>
-              <div>
-                <label htmlFor="return-type-input">
-                  Return Type
-                </label>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="return-type-input" className="text-sm font-medium">Return Type</label>
                 <select
-                name="return_type"
-                id="return-type-input"
-                value={formData.return_type}
-                onChange={handleChange}>
+                  name="return_type"
+                  id="return-type-input"
+                  value={formData.return_type}
+                  onChange={handleChange}
+                  className={`${INPUT_BASE} cursor-pointer`}
+                >
                   {PARAM_TYPES.map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
               </div>
-              <div>
-                <label>Parameters</label>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium">Parameters</label>
                 {formData.function_params.map((param, idx) => (
-                  <div key={idx} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", alignItems: "center" }}>
+                  <div key={idx} className="flex gap-2 mb-2 items-center">
                     <input
-                    type="text"
-                    value={param.name}
-                    onChange={(e) => handleParamChange(idx, "name", e.target.value)}
-                    placeholder="param name"
-                    style={{flex: 1}}
+                      type="text"
+                      value={param.name}
+                      onChange={(e) => handleParamChange(idx, "name", e.target.value)}
+                      placeholder="param name"
+                      className="flex-1 px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm placeholder:text-muted focus:border-primary focus:outline-none"
                     />
                     <select
-                    value={param.type}
-                    onChange={(e) => handleParamChange(idx, "type", e.target.value)}
+                      value={param.type}
+                      onChange={(e) => handleParamChange(idx, "type", e.target.value)}
+                      className="px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm cursor-pointer focus:border-primary focus:outline-none"
                     >
                       {PARAM_TYPES.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
+                        <option key={t} value={t}>{t}</option>
                       ))}
                     </select>
-                    <button type="button" onClick={() => handleRemoveParam(idx)}
-                      style={{ padding: "0.3em 0.6em", fontSize: "0.8em" }}>
-                        Remove
+                    <button type="button" onClick={() => handleRemoveParam(idx)} className="px-3 py-1.5 text-sm text-error border border-border-default rounded-lg hover:border-error hover:bg-error/10 transition-colors">
+                      Remove
                     </button>
                   </div>
                 ))}
-                <button type="button" onClick={handleAddParam}
-                style={{ fontSize: "0.85em" }}>
+                <button type="button" onClick={handleAddParam} className="text-sm text-primary font-medium border border-dashed border-primary/50 rounded-lg px-3 py-2 hover:bg-primary/10 transition-colors">
                   + Add Parameter
                 </button>
               </div>
             </div>
           )}
         </div>
-        <button type="submit">SUBMIT</button>
+        <button type="submit" className="w-full py-2 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed">SUBMIT</button>
       </form>
     </main>
   );
