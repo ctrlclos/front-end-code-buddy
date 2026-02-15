@@ -21,6 +21,9 @@ const NavBar = () => {
                         <Link to='/challenges/new'>NEW CHALLENGE</Link>
                     </li>
                     <li>
+                      <Link to="/progress" >PROGRESS</Link>
+                    </li>
+                    <li>
                         <Link to='/' onClick={handleSignOut}>
                             SIGN OUT
                         </Link>
