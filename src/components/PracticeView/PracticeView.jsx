@@ -6,7 +6,7 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
 import * as challengeService from '../../services/challengeService';
 import * as submissionService from '../../services/submissionService';
-
+import VoiceCoach from "../VoiceCoach/VoiceCoach";
 const LANGUAGES = [
   { value: "python",label: "Python" },
   { value: "javascript", label: "JavaScript" },
@@ -187,6 +187,9 @@ return (
           </button>
         </div>
       </div>
+
+      {/* Voice Coach */}
+      <VoiceCoach />
 
       {/* Editor */}
       <div className="rounded-lg overflow-hidden border border-border-strong shadow-sm">
