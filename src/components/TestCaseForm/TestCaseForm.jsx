@@ -49,11 +49,19 @@ const TestCaseForm = ({ existingTestCase, onSave, onCancel, challenge }) => {
     return null;
   };
 
+  const normalizeJson = (value) => {
+    const trimmed = value.trim();
+    if (trimmed === "True") return "true";
+    if (trimmed === "False") return "false";
+    if (trimmed === "None") return "null";
+    return trimmed;
+  };
+
   const validateFunctionOutput = (output) => {
     try {
-      JSON.parse(output);
+      JSON.parse(normalizeJson(output));
     } catch {
-      return "Expected output must be valid JSON, e.g. [0, 1] or \"hello\" or 42";
+      return "Expected output must be valid JSON, e.g. [0, 1], \"hello\", 42, true, or false";
     }
     return null;
   };
@@ -74,7 +82,10 @@ const TestCaseForm = ({ existingTestCase, onSave, onCancel, challenge }) => {
       }
     }
 
-    onSave(formData);
+    const normalized = isFunctionBased
+      ? { ...formData, expected_output: normalizeJson(formData.expected_output) }
+      : formData;
+    onSave(normalized);
   };
 
   const inputHint = isFunctionBased
@@ -93,7 +104,7 @@ const TestCaseForm = ({ existingTestCase, onSave, onCancel, challenge }) => {
     : "e.g. hello world";
 
   const outputPlaceholder = isFunctionBased
-    ? `e.g. [0, 1] or "result" or 42`
+    ? `e.g. [0, 1], "result", 42, true, or false`
     : "e.g. expected output text";
 
   return (
