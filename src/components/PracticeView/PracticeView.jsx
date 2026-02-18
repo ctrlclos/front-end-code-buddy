@@ -6,7 +6,7 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
 import * as challengeService from '../../services/challengeService';
 import * as submissionService from '../../services/submissionService';
-
+import VoiceCoach from "../VoiceCoach/VoiceCoach";
 const LANGUAGES = [
   { value: "python",label: "Python" },
   { value: "javascript", label: "JavaScript" },
@@ -16,6 +16,14 @@ const LANGUAGE_EXTENSIONS = {
   python: () => langs.py(),
   javascript: () => langs.js(),
 }
+
+const STATUS_STYLES = {
+  passed: { border: 'border-success', bg: 'bg-success/10', text: 'text-success' },
+  failed: { border: 'border-error', bg: 'bg-error/10', text: 'text-error' },
+  error:  { border: 'border-error', bg: 'bg-error/10', text: 'text-error' },
+};
+
+const BTN_BASE = "px-3 py-1.5 rounded-lg text-sm font-medium border cursor-pointer transition-colors";
 
 const PracticeView = () => {
   const { challengeId } = useParams();
@@ -110,71 +118,49 @@ const PracticeView = () => {
     setResult(null);
   };
 
-if (!challenge) return <main style={{ textAlign: "center", padding: "2rem" }}>Loading...</main>
+if (!challenge) return <main className="max-w-7xl mx-auto px-8 py-8 text-center">Loading...</main>
 return (
-  <main style={{ display: "flex", gap: "1.5rem", textAlign: "left", maxWidth: "100%" }}>
+  <main className="max-w-7xl mx-auto px-8 py-8 flex gap-6 text-left">
     {/* Left panel - Challenge description */}
-    <section style={{ flex: "1", minWidth: "0", overflowY: "auto" }}>
-      <Link to={`/challenges/${challengeId}`} style={{ display: "inline-block", marginBottom: "1rem", fontSize: "0.9em" }}>
+    <section className="flex-1 min-w-0 overflow-y-auto bg-bg-card rounded-lg border border-border-subtle shadow-sm p-6">
+      <Link to={`/challenges/${challengeId}`} className="inline-block mb-4 text-sm text-primary hover:text-primary-dark">
         &larr; Back to challenge
       </Link>
       <header>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+        <div className="flex gap-2 flex-wrap mb-2">
           {challenge.difficulty && (
-            <span style={{
-              fontSize: "0.75em",
-              fontWeight: "bold",
-              padding: "0.2em 0.6em",
-              borderRadius: "4px",
-              border: "1px solid #646cff",
-              color: "#646cff",
-            }}>
+            <span className="text-xs font-bold px-2 py-1 rounded border border-primary text-primary">
               {challenge.difficulty.toUpperCase()}
             </span>
           )}
           {challenge.data_structure_type && (
-            <span style={{
-              fontSize: "0.75em",
-              fontWeight: "bold",
-              padding: "0.2em 0.6em",
-              borderRadius: "4px",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              opacity: 0.8,
-            }}>
+            <span className="text-xs font-bold px-2 py-1 rounded border border-border-strong text-muted">
               {challenge.data_structure_type.replace("_", " ").toUpperCase()}
             </span>
           )}
         </div>
         {challenge.function_name && (
-          <p style={{ fontFamily: "monospace", fontSize: "0.9em", opacity: 0.8, margin: "0.5rem 0" }}>
+          <p className="font-mono text-sm text-muted my-2">
             {challenge.function_name}(
             {challenge.function_params?.map((p) => `${p.name}: ${p.type}`).join(", ")}
             ) &rarr; {challenge.return_type}
           </p>
         )}
-        <h1 style={{ margin: "0.5rem 0", fontSize: "1.8em" }}>{challenge.title}</h1>
+        <h1 className="my-2 text-3xl font-bold">{challenge.title}</h1>
       </header>
-      <p style={{ lineHeight: "1.6", opacity: 0.9 }}>{challenge.description}</p>
+      <p className="leading-relaxed text-muted">{challenge.description}</p>
     </section>
     {/* Right panel - Code Editor */}
-    <section style={{ flex: "1.5", minWidth: "0", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+    <section className="flex-[1.5] min-w-0 flex flex-col gap-3 bg-bg-card rounded-lg border border-border-subtle shadow-sm p-6">
       {/* Toolbar */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <label htmlFor="language-select">Language:</label>
+      <div className="flex justify-between items-center flex-wrap gap-3">
+        <div className="flex items-center gap-2">
+          <label htmlFor="language-select" className="text-sm font-medium">Language:</label>
           <select
             id="language-select"
             value={language}
             onChange={handleLanguageChange}
-            style={{
-              padding: "0.4em 0.8em",
-              borderRadius: "8px",
-              border: "1px solid #646cff",
-              background: "#1a1a1a",
-              color: "inherit",
-              fontSize: "0.9em",
-              cursor: "pointer",
-            }}
+            className="px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm text-sm cursor-pointer focus:border-primary focus:outline-none"
           >
             {LANGUAGES.map((lang) => (
               <option key={lang.value} value={lang.value}>
@@ -183,30 +169,30 @@ return (
             ))}
           </select>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <span style={{
-            fontFamily: "monospace",
-            fontSize: "1.1em",
-            fontWeight: "bold",
-            minWidth: "3.5rem",
-            textAlign: "center",
-          }}>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-lg font-bold min-w-[3.5rem] text-center">
             {formatTime(timer)}
           </span>
           <button
             onClick={() => setTimerActive(!timerActive)}
-            style={{ borderColor: timerActive ? "#646cff" : "transparent" }}
+            className={`${BTN_BASE} ${timerActive ? 'border-primary bg-primary/10 text-primary' : 'border-border-default text-muted hover:border-primary hover:text-primary'}`}
           >
             {timerActive ? "Pause" : "Start timer"}
           </button>
-          <button onClick={() => { setTimer(0); setTimerActive(false); }}>
+          <button
+            onClick={() => { setTimer(0); setTimerActive(false); }}
+            className={`${BTN_BASE} border-border-default text-muted hover:border-primary hover:text-primary`}
+          >
             Reset
           </button>
         </div>
       </div>
 
+      {/* Voice Coach */}
+      <VoiceCoach />
+
       {/* Editor */}
-      <div style={{ borderRadius: "8px", overflow: "hidden", border: "1px solid #333" }}>
+      <div className="rounded-lg overflow-hidden border border-border-strong shadow-sm">
         <CodeMirror
           value={code}
           height="400px"
@@ -216,122 +202,82 @@ return (
         />
       </div>
 
+      {/* No test cases notice */}
+      {challenge.test_case_count === 0 && (
+        <div className="px-4 py-3 rounded-lg border border-primary/30 bg-primary/5">
+          <p className="text-sm text-muted">
+            This challenge doesn't have test cases yet. You can write a solution, but it won't be tested.
+          </p>
+        </div>
+      )}
+
       {/* Action Buttons */}
-      <div style={{ display: "flex", gap: "0.5rem" }}>
+      <div className="flex gap-2">
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          style={{
-            background: "#646cff",
-            color: "#fff",
-            borderColor: "#646cff",
-            opacity: isSubmitting ? 0.6 : 1,
-            cursor: isSubmitting ? "not-allowed" : "pointer",
-          }}
+          className={`${BTN_BASE} bg-primary text-white border-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed`}
         >
           {isSubmitting ? "Submitting..." : "Submit"}
         </button>
-        <button onClick={handleReset}>Reset Code</button>
+        <button
+          onClick={handleReset}
+          className={`${BTN_BASE} border-border-default text-muted hover:border-primary hover:text-primary`}
+        >
+          Reset Code
+        </button>
       </div>
       {/* Result */}
       {result && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <div className="flex flex-col gap-2">
           {result.error ? (
-            <div style={{
-              padding: "0.75rem 1rem",
-              borderRadius: "8px",
-              border: "1px solid #e53e3e",
-              background: "rgba(229, 62, 62, 0.1)",
-            }}>
-              <p style={{ margin: 0, color: "#e53e3e" }}>{result.error}</p>
+            <div className="px-4 py-3 rounded-lg border border-error bg-error/10">
+              <p className="m-0 text-error">{result.error}</p>
             </div>
           ) : result.test_results ? (
             <>
-              <div style={{
-                padding: "0.75rem 1rem",
-                borderRadius: "8px",
-                border: `1px solid ${result.status === "passed" ? "#48bb78" : "#e53e3e"}`,
-                background: result.status === "passed"
-                  ? "rgba(72, 187, 120, 0.1)"
-                  : "rgba(229, 62, 62, 0.1)",
-              }}>
-                <p style={{
-                  margin: 0,
-                  fontWeight: "bold",
-                  color: result.status === "passed" ? "#48bb78" : "#e53e3e",
-                }}>
+              <div className={`px-4 py-3 rounded-lg border ${STATUS_STYLES[result.status]?.border || 'border-border-default'} ${STATUS_STYLES[result.status]?.bg || ''}`}>
+                <p className={`m-0 font-bold ${STATUS_STYLES[result.status]?.text || ''}`}>
                   {result.status === "passed" ? "All Tests Passed" : "Some Tests Failed"}
                   {" "}&mdash; {result.passed_count} / {result.total_count} passed
                 </p>
               </div>
               {result.test_results.map((tr, idx) => (
-                <div key={tr.test_case_id} style={{
-                  padding: "0.75rem 1rem",
-                  borderRadius: "8px",
-                  border: `1px solid ${tr.is_hidden ? "#555" : tr.passed ? "#48bb78" : "#e53e3e"}`,
-                  background: tr.is_hidden
-                    ? "rgba(255, 255, 255, 0.03)"
+                <div key={tr.test_case_id} className={`px-4 py-3 rounded-lg border ${
+                  tr.is_hidden
+                    ? 'border-border-strong bg-bg-darker'
                     : tr.passed
-                      ? "rgba(72, 187, 120, 0.05)"
-                      : "rgba(229, 62, 62, 0.05)",
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: tr.is_hidden ? 0 : "0.5rem" }}>
-                    <span style={{ fontWeight: "bold", color: tr.passed ? "#48bb78" : "#e53e3e" }}>
+                      ? 'border-success bg-success/5'
+                      : 'border-error bg-error/5'
+                }`}>
+                  <div className={`flex justify-between items-center ${tr.is_hidden ? '' : 'mb-2'}`}>
+                    <span className={`font-bold ${tr.passed ? 'text-success' : 'text-error'}`}>
                       {tr.passed ? "PASS" : "FAIL"} &mdash; {tr.is_hidden ? "Hidden Test Case" : `Test Case #${idx + 1}`}
                     </span>
                     {tr.time && (
-                      <span style={{ fontSize: "0.8em", opacity: 0.6 }}>{tr.time}s</span>
+                      <span className="text-sm text-muted">{tr.time}s</span>
                     )}
                   </div>
                   {!tr.is_hidden && (
-                    <div style={{ fontSize: "0.85em" }}>
-                      <div style={{ marginBottom: "0.25rem" }}>
+                    <div className="text-sm">
+                      <div className="mb-1">
                         <strong>{challenge.function_name ? "Arguments" : "Input"}</strong>
-                        <pre style={{
-                          margin: "0.25rem 0",
-                          padding: "0.4rem 0.6rem",
-                          background: "rgba(0, 0, 0, 0.3)",
-                          borderRadius: "4px",
-                          fontFamily: "monospace",
-                          whiteSpace: "pre-wrap",
-                        }}>{tr.input ? formatInput(tr.input) : "(empty)"}</pre>
+                        <pre className="my-1 px-2 py-1 bg-bg-darker border border-border-subtle rounded font-mono whitespace-pre-wrap">{tr.input ? formatInput(tr.input) : "(empty)"}</pre>
                       </div>
-                      <div style={{ marginBottom: "0.25rem" }}>
+                      <div className="mb-1">
                         <strong>Expected:</strong>
-                        <pre style={{
-                          margin: "0.25rem 0",
-                          padding: "0.4rem 0.6rem",
-                          background: "rgba(0, 0, 0, 0.3)",
-                          borderRadius: "4px",
-                          fontFamily: "monospace",
-                          whiteSpace: "pre-wrap",
-                        }}>{formatOutput(tr.expected_output)}</pre>
+                        <pre className="my-1 px-2 py-1 bg-bg-darker border border-border-subtle rounded font-mono whitespace-pre-wrap">{formatOutput(tr.expected_output)}</pre>
                       </div>
                       {!tr.passed && tr.actual_output !== null && (
-                        <div style={{ marginBottom: "0.25rem" }}>
-                          <strong style={{ color: "#e53e3e" }}>Your Output:</strong>
-                          <pre style={{
-                            margin: "0.25rem 0",
-                            padding: "0.4rem 0.6rem",
-                            background: "rgba(229, 62, 62, 0.1)",
-                            borderRadius: "4px",
-                            fontFamily: "monospace",
-                            whiteSpace: "pre-wrap",
-                          }}>{tr.actual_output ? formatOutput(tr.actual_output) : "(empty)"}</pre>
+                        <div className="mb-1">
+                          <strong className="text-error">Your Output:</strong>
+                          <pre className="my-1 px-2 py-1 bg-error/10 border border-error/20 rounded font-mono whitespace-pre-wrap">{tr.actual_output ? formatOutput(tr.actual_output) : "(empty)"}</pre>
                         </div>
                       )}
                       {tr.error && (
                         <div>
-                          <strong style={{ color: "#e53e3e" }}>Error:</strong>
-                          <pre style={{
-                            margin: "0.25rem 0",
-                            padding: "0.4rem 0.6rem",
-                            background: "rgba(229, 62, 62, 0.1)",
-                            borderRadius: "4px",
-                            fontFamily: "monospace",
-                            whiteSpace: "pre-wrap",
-                            fontSize: "0.9em",
-                          }}>{tr.error}</pre>
+                          <strong className="text-error">Error:</strong>
+                          <pre className="my-1 px-2 py-1 bg-error/10 border border-error/20 rounded font-mono whitespace-pre-wrap text-sm">{tr.error}</pre>
                         </div>
                       )}
                     </div>
@@ -340,20 +286,13 @@ return (
               ))}
             </>
           ) : (
-            <div style={{
-              padding: "0.75rem 1rem",
-              borderRadius: "8px",
-              border: "1px solid #48bb78",
-              background: "rgba(72, 187, 120, 0.1)",
-            }}>
-              <p style={{ margin: "0 0 0.25rem 0", color: "#48bb78", fontWeight: "bold" }}>
-                Status: {result.status || "Submitted"}
+            <div className="px-4 py-3 rounded-lg border border-primary/30 bg-primary/5">
+              <p className="mb-1 font-bold text-primary">
+                Code saved
               </p>
-              {result.id && (
-                <p style={{ margin: 0, fontSize: "0.85em", opacity: 0.8 }}>
-                  Submission ID: {result.id}
-                </p>
-              )}
+              <p className="m-0 text-sm text-muted">
+                Your code was saved, but this challenge has no test cases to run against.
+              </p>
             </div>
           )}
         </div>

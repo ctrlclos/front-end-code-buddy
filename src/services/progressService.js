@@ -1,0 +1,29 @@
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/progress`;
+
+const getStats = async () => {
+  try {
+    const res = await fetch( `${BASE_URL}/stats`, {
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return res.json();
+  } catch (error) {
+    throw error
+  }
+};
+
+const getActivity = async (limit = 20) => {
+  try {
+    const res = await fetch(`${BASE_URL}/activity?limit=${limit}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    });
+    return res.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { getStats, getActivity };

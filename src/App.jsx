@@ -14,6 +14,8 @@ import ChallengeList from "./components/ChallengeList/ChallengeList.jsx";
 import ChallengeDetails from "./components/ChallengeDetails/ChallengeDetails.jsx";
 import ChallengeForm from "./components/ChallengeForm/ChallengeForm.jsx";
 
+import ProgressDashboard from '../src/components/ProgressDashboard/ProgressDashboard.jsx';
+
 const App = () => {
   const { user } = useContext(UserContext);
   const [challenges, setChallenges] = useState([]);
@@ -64,6 +66,7 @@ const App = () => {
             <Route path="/challenges/new" element={<ChallengeForm handleAddChallenge={handleAddChallenge} />} />
             <Route path="/challenges/:challengeId/edit" element={<ChallengeForm handleUpdateChallenge={handleUpdateChallenge} />} />
             <Route path="/challenges/:challengeId/practice" element={<PracticeView />} />
+            <Route path="/progress" element={<ProgressDashboard/>} />
           </>
         ) : (
           <>

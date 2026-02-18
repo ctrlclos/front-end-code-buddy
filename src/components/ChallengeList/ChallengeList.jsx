@@ -9,6 +9,8 @@ const DATA_STRUCTURES = [
 
 const formatLabel = (value) => value.replace("_", " ");
 
+const FILTER_BASE = "px-3 py-1.5 rounded-lg text-sm font-medium border cursor-pointer transition-colors";
+
 const ChallengeList = ({ challenges, fetchChallenges }) => {
   const [activeDifficulty, setActiveDifficulty] = useState("");
   const [activeDataStructure, setActiveDataStructure] = useState("");
@@ -48,24 +50,26 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
   }
 
   return (
-    <main>
-      <section style={{ marginBottom: "1.5rem" }}>
-        <div style={{ marginBottom: "0.75rem" }}>
-          <label htmlFor="sort-select">Sort by: </label>
-          <select id="sort-select" value={activeSort} onChange={handleSortChange}>
+    <main className="max-w-4xl mx-auto px-8 py-8">
+      <h1 className="text-3xl font-bold mb-6">Challenges</h1>
+
+      {/* Filter section */}
+      <section className="mb-6 bg-bg-card rounded-lg border border-border-subtle shadow-sm p-4">
+        <div className="mb-3">
+          <label htmlFor="sort-select" className="text-sm font-medium mr-2">Sort by: </label>
+          <select id="sort-select" value={activeSort} onChange={handleSortChange} className="px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm cursor-pointer text-sm focus:border-primary focus:outline-none">
             <option value="created_at">Newest First</option>
             <option value="difficulty">Difficulty</option>
           </select>
         </div>
 
-        <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center", flexWrap: "wrap" }}>
+        {/* Difficulty filters */}
+        <div className="flex gap-2 justify-center flex-wrap">
           {DIFFICULTIES.map((difficulty) => (
             <button
               key={difficulty}
               onClick={() => handleDifficultyFilter(difficulty)}
-              style={{
-                borderColor: activeDifficulty === difficulty ? "#646cff" : "transparent",
-              }}
+              className={`${FILTER_BASE} ${activeDifficulty === difficulty ? 'border-primary bg-primary/10 text-primary' : 'border-border-default text-muted hover:border-primary hover:text-primary'}`}
             >
               {difficulty}
             </button>
@@ -73,44 +77,46 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
           {activeDifficulty && (
             <button
               onClick={() => handleDifficultyFilter("")}
-              style={{ borderColor: "transparent" }}
+              className={`${FILTER_BASE} border-border-default text-muted hover:text-error hover:border-error`}
             >
               Clear
             </button>
           )}
         </div>
 
-        <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center", flexWrap: "wrap", marginTop: "0.75rem" }}>
+        {/* Data structure filters */}
+        <div className="flex gap-2 justify-center flex-wrap mt-3">
           {DATA_STRUCTURES.map((ds) => (
             <button
               key={ds}
               onClick={() => handleDataStructureFilter(ds)}
-              style={{
-                borderColor: activeDataStructure === ds ? "#646cff" : "transparent",
-              }}
+              className={`${FILTER_BASE} ${activeDataStructure === ds ? 'border-primary bg-primary/10 text-primary' : 'border-border-default text-muted hover:border-primary hover:text-primary'}`}
             >
               {formatLabel(ds)}
             </button>
           ))}
-
-          <div style={{display: "flex", gap: "0.5rem", justifyContent: "center", marginTop: "0.75rem"}}>
-            <button
-                onClick={() => handleCuratedFilter("true")}
-                style={{borderColor: curatedFilter === "true" ? "#646cff" : "transparent"}}
-              >Curated Questions</button>
-              {curatedFilter && (<button
-                onClick={() => handleCuratedFilter("")}
-                style={{borderColor: "transparent"}}
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
           {activeDataStructure && (
             <button
               onClick={() => handleDataStructureFilter("")}
-              style={{ borderColor: "transparent" }}
+              className={`${FILTER_BASE} border-border-default text-muted hover:text-error hover:border-error`}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* Curated filter */}
+        <div className="flex gap-2 justify-center mt-3">
+          <button
+            onClick={() => handleCuratedFilter("true")}
+            className={`${FILTER_BASE} ${curatedFilter === "true" ? 'border-primary bg-primary/10 text-primary' : 'border-border-default text-muted hover:border-primary hover:text-primary'}`}
+          >
+            Curated Questions
+          </button>
+          {curatedFilter && (
+            <button
+              onClick={() => handleCuratedFilter("")}
+              className={`${FILTER_BASE} border-border-default text-muted hover:text-error hover:border-error`}
             >
               Clear
             </button>
@@ -118,25 +124,34 @@ const ChallengeList = ({ challenges, fetchChallenges }) => {
         </div>
       </section>
 
-      {challenges.map((challenge) => (
-        <Link key={challenge.id} to={`/challenges/${challenge.id}`}>
-          <article>
-            <header>
-              <h2>{challenge.title}</h2>
-              <p>
-                {`${challenge.author_username} posted on
-                ${new Date(challenge.created_at).toLocaleDateString()}`}
-              </p>
-            </header>
-            <p>{challenge.description}</p>
-            <p>{challenge.difficulty}</p>
-            {challenge.is_curated && <p style={{color: "#646cff"}}>Curated</p>}
-            {challenge.data_structure_type && (
-              <p>{formatLabel(challenge.data_structure_type)}</p>
-            )}
-          </article>
-        </Link>
-      ))}
+      {/* Challenge cards */}
+      {challenges.length > 0 ? (
+        challenges.map((challenge) => (
+          <Link key={challenge.id} to={`/challenges/${challenge.id}`} className="block no-underline text-inherit">
+            <article className="p-4 mb-3 rounded-lg border border-border-subtle hover:border-primary transition-colors bg-bg-card shadow-sm">
+              <header>
+                <h2 className="text-lg font-bold mb-1">{challenge.title}</h2>
+                <p className="text-muted text-sm mb-2">
+                  {`${challenge.author_username} posted on
+                  ${new Date(challenge.created_at).toLocaleDateString()}`}
+                </p>
+              </header>
+              <p className="text-sm text-muted mb-2">{challenge.description}</p>
+              <div className="flex gap-2 items-center">
+                <span className="text-xs font-bold px-2 py-1 rounded border border-primary text-primary uppercase">{challenge.difficulty}</span>
+                {challenge.is_curated && (
+                  <span className="text-xs font-bold px-2 py-1 rounded border border-primary/50 text-primary bg-primary/10 uppercase">Curated</span>
+                )}
+                {challenge.data_structure_type && (
+                  <span className="text-xs font-bold px-2 py-1 rounded border border-border-strong text-muted uppercase">{formatLabel(challenge.data_structure_type)}</span>
+                )}
+              </div>
+            </article>
+          </Link>
+        ))
+      ) : (
+        <p className="text-muted text-center py-8">No challenges found. Try adjusting your filters or create a new challenge.</p>
+      )}
     </main>
   );
 };

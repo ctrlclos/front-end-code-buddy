@@ -1,16 +1,37 @@
-# React + Vite
+# Code Buddy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Code Buddy Screenshot](public/screenshot.png)
 
-Currently, two official plugins are available:
+Code Buddy is an interactive coding challenge platform where users can create, share, and solve programming challenges with real-time code execution and automated test case validation.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Background
 
-## React Compiler
+As a developer, I wanted to build a tool that makes practicing coding problems more engaging and personalized. Unlike existing platforms, Code Buddy lets users create their own challenges with custom test cases, track their progress over time, and even leverage AI to auto-generate test cases — making it a true companion for leveling up your coding skills.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Getting Started
 
-## Expanding the ESLint configuration
+- **Deployed App:** [Code Buddy](<>)
+- **Planning Materials:** [Project Planning](<>)
+- **Back-End Repository:** [Code Buddy Back-End](<https://github.com/ctrlclos/back-end-code-buddy>)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Attributions
+
+- [E2B](https://e2b.dev/) — Secure sandboxed code execution
+- [Google Gemini](https://ai.google.dev/) — AI-powered test case generation
+- [CodeMirror](https://codemirror.net/) — In-browser code editor component
+
+## Technologies Used
+
+- **Front-End:** React 19, React Router 7, Tailwind CSS 4, CodeMirror
+- **Back-End:** Python, Flask, PostgreSQL, psycopg2
+- **Authentication:** JWT (JSON Web Tokens), bcrypt
+- **Services:** E2B (code execution sandbox), Google Gemini (AI test generation)
+- **Build Tools:** Vite
+
+## Next Steps
+
+- Add support for multiple programming languages beyond Python/JavaScript
+- Implement a public challenge marketplace for community sharing
+- Add difficulty-based leaderboards and streak tracking
+- Enable collaborative challenge creation between users
+- Add solution explanations and hints for challenges

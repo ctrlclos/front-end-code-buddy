@@ -31,12 +31,12 @@ const SignInForm = () => {
     }
 
     return (
-        <main>
-            <h1>Sign In</h1>
-            <p>{message}</p>
-            <form autoComplete='off' onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor='username'>Username:</label>
+        <main className="max-w-md mx-auto px-8 py-16">
+            <h1 className="text-3xl font-bold mb-4">Sign In</h1>
+            <p className="text-error mb-4">{message}</p>
+            <form autoComplete='off' onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1">
+                    <label htmlFor='username' className="text-sm font-medium">Username:</label>
                     <input
                         type='text'
                         autoComplete='off'
@@ -44,11 +44,12 @@ const SignInForm = () => {
                         value={formData.username}
                         name='username'
                         onChange={handleChange}
+                        className="w-full px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm placeholder:text-muted focus:border-primary focus:outline-none"
                         required
                     />
                 </div>
-                <div>
-                    <label htmlFor='password'>Password:</label>
+                <div className="flex flex-col gap-1">
+                    <label htmlFor='password' className="text-sm font-medium">Password:</label>
                     <input
                         type='password'
                         autoComplete='off'
@@ -56,12 +57,13 @@ const SignInForm = () => {
                         value={formData.password}
                         name='password'
                         onChange={handleChange}
+                        className="w-full px-3 py-2 rounded-lg border border-border-strong bg-white shadow-sm placeholder:text-muted focus:border-primary focus:outline-none"
                         required
                     />
                 </div>
-                <div>
-                    <button>Sign In</button>
-                    <button onClick={() => navigate('/')}>Cancel</button>
+                <div className="flex gap-3 mt-2">
+                    <button className="w-full py-2 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark">Sign In</button>
+                    <button onClick={() => navigate('/')} className="w-full py-2 rounded-lg border border-border-default text-muted font-semibold hover:border-primary hover:text-primary">Cancel</button>
                 </div>
             </form>
         </main>
