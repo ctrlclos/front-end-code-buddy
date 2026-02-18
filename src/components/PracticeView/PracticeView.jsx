@@ -202,6 +202,15 @@ return (
         />
       </div>
 
+      {/* No test cases notice */}
+      {challenge.test_case_count === 0 && (
+        <div className="px-4 py-3 rounded-lg border border-primary/30 bg-primary/5">
+          <p className="text-sm text-muted">
+            This challenge doesn't have test cases yet. You can write a solution, but it won't be tested.
+          </p>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="flex gap-2">
         <button
@@ -277,15 +286,13 @@ return (
               ))}
             </>
           ) : (
-            <div className="px-4 py-3 rounded-lg border border-success bg-success/10">
-              <p className="mb-1 text-success font-bold">
-                Status: {result.status || "Submitted"}
+            <div className="px-4 py-3 rounded-lg border border-primary/30 bg-primary/5">
+              <p className="mb-1 font-bold text-primary">
+                Code saved
               </p>
-              {result.id && (
-                <p className="m-0 text-sm text-muted">
-                  Submission ID: {result.id}
-                </p>
-              )}
+              <p className="m-0 text-sm text-muted">
+                Your code was saved, but this challenge has no test cases to run against.
+              </p>
             </div>
           )}
         </div>

@@ -12,7 +12,7 @@ const submit = async(challengeId, submissionData) => {
     });
     return res.json();
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }
 
@@ -25,7 +25,7 @@ const getSubmissions = async (challengeId) => {
     });
     return res.json();
   } catch(err) {
-    console.log(err)
+    throw err
   }
 }
 

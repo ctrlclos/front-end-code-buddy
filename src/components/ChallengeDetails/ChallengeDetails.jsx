@@ -6,6 +6,7 @@ import * as testCaseService from "../../services/testCaseService";
 import { UserContext } from "../../contexts/UserContext";
 import TestCaseForm from "../TestCaseForm/TestCaseForm";
 import TestCaseList from "../TestCaseList/TestCaseList";
+import GenerateTestCasesButton from "../GenerateTestCasesButton/GenerateTestCasesButton";
 
 const ChallengeDetails = ({ handleDeleteChallenge }) => {
   const { challengeId } = useParams();
@@ -114,6 +115,15 @@ const ChallengeDetails = ({ handleDeleteChallenge }) => {
             </button>
           )}
         </div>
+
+        {isAuthor && !showForm && !editingTestCase && (
+          <div className="mb-4">
+            <GenerateTestCasesButton
+              challengeId={challengeId}
+              onSaveTestCase={handleCreateTestCase}
+            />
+          </div>
+        )}
 
         {showForm && (
           <div className="mb-4">

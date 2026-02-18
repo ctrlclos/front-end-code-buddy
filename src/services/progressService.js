@@ -9,7 +9,7 @@ const getStats = async () => {
     });
     return res.json();
   } catch (error) {
-    console.log(error)
+    throw error
   }
 };
 
@@ -22,7 +22,7 @@ const getActivity = async (limit = 20) => {
     });
     return res.json();
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 

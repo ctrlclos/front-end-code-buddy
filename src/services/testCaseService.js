@@ -11,24 +11,26 @@ const index = async (challengeId) => {
     })
     return res.json()
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }
 //POST /challenges/:id/test-cases
 const createTestCase = async (challengeId, testCaseData) => {
-    try {
-      const res = await fetch(`${BASE_URL}/${challengeId}/test-cases`, {
-          method: 'POST',
-          headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-          },
-          body: JSON.stringify(testCaseData)
-      });
-      return res.json();
-    } catch (err) {
-      console.log(err)
+    const res = await fetch(`${BASE_URL}/${challengeId}/test-cases`, {
+        method: 'POST',
+        headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(testCaseData)
+    });
+
+    if (!res.ok) {
+      const body = await res.json();
+      throw new Error(body.error || "Failed to create test case");
     }
+
+    return res.json();
 }
 //PUT /test-cases/:id
 const updateTestCase = async (testCaseId, testCaseData) => {
@@ -43,7 +45,7 @@ const updateTestCase = async (testCaseId, testCaseData) => {
     });
     return res.json()
   } catch(err) {
-    console.log(err)
+    throw err
   }
 }
 
@@ -59,8 +61,25 @@ const removeTestCase = async (testCaseId) => {
       });
     return res.json()
   } catch (err) {
-    console.log(err)
+    throw err
   }
 }
 
-export { index, createTestCase, updateTestCase, removeTestCase }
+const generateTestCases = async (challengeId) => {
+  const res = await fetch(`${BASE_URL}/${challengeId}/generate-test-cases`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if(!res.ok) {
+    const body = await res.json();
+    throw new Error(body.error || "Failed to generate test cases");
+  }
+
+  return res.json();
+};
+
+
+export { index, createTestCase, updateTestCase, removeTestCase, generateTestCases };

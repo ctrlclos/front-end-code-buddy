@@ -14,7 +14,7 @@ const index = async (filters = {}) => {
     const res = await fetch(url);
     return res.json();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
@@ -27,7 +27,7 @@ const show = async (challengeId) => {
     });
     return res.json();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
@@ -43,7 +43,7 @@ const create = async (challengeFormData) => {
     });
     return res.json();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
@@ -59,7 +59,7 @@ const update = async (challengeId, challengeFormData) => {
     });
     return res.json();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
@@ -73,7 +73,7 @@ const deleteChallenge = async (challengeId) => {
     });
     return res.json();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
