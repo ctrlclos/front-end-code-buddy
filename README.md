@@ -10,7 +10,7 @@ As a developer, I wanted to build a tool that makes practicing coding problems m
 
 ## Getting Started
 
-- **Deployed App:** [Code Buddy](https://code-buddy-app.netlify.app)
+- **Deployed App:** [Code Buddy]([https://code-buddy-front-end.netlify.app/)
 - **Back-End Repository:** [Code Buddy Back-End](https://github.com/ctrlclos/back-end-code-buddy)
 
 ## Features
